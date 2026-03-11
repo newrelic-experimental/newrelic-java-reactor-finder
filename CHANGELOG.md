@@ -1,3 +1,6 @@
+## Version: [v1.0.0](https://github.com/newrelic-experimental/newrelic-java-reactor-finder/releases/tag/v1.0.0) | Created: 2026-03-11
+
+
 ## Installation
 
 To install:
