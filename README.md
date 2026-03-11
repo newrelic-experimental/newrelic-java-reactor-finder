@@ -40,8 +40,8 @@ Note that classes in subpackages will be traced as well.
 Use a stanza named reactor-finder.packages to include packages
 
 **Example**   
-&nbsp;&nbsp;reactor:
-&nbsp;&nbsp;&nbsp;&nbsp;packages: com.mycompany.package1,com.mycompany.package2
+&nbsp;&nbsp;reactor:   
+&nbsp;&nbsp;&nbsp;&nbsp;packages: com.mycompany.package1,com.mycompany.package2   
 
 
 ## Support
