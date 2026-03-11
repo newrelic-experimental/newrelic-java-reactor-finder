@@ -36,15 +36,15 @@ import templates.*
 import de.undercouch.gradle.tasks.download.Download
 
 task getAgent(type: Download) {
-   def rootProject = projectDir.path
-   src 'https://repo1.maven.org/maven2/com/newrelic/agent/java/newrelic-agent/'+project.javaAgentVersion+'/newrelic-agent-'+project.javaAgentVersion+'.jar'
-   dest projectDir.path+"/libs/newrelic-agent-"+project.javaAgentVersion+".jar"
+  def rootProject = projectDir.path
+  src 'https://repo1.maven.org/maven2/com/newrelic/agent/java/newrelic-agent/'+project.javaAgentVersion+'/newrelic-agent-'+project.javaAgentVersion+'.jar'
+  dest projectDir.path+"/libs/newrelic-agent-"+project.javaAgentVersion+".jar"
 }
 
 task extractJars(type: Copy) {
 
-    from zipTree(projectDir.path+"/libs/newrelic-agent-"+project.javaAgentVersion+".jar")
-    into projectDir.path+"/libs"
+  from zipTree(projectDir.path+"/libs/newrelic-agent-"+project.javaAgentVersion+".jar")
+  into projectDir.path+"/libs"
 }
 
 task cleanUp(type: Delete) {
@@ -59,24 +59,24 @@ task cleanUp(type: Delete) {
 }
 
 task checkForDependencies(type: Exec) {
-    environment "JAVAAGENTVERSION", javaAgentVersion
-    def rootProject = projectDir.path
-    def cmdLine = rootProject+'/newrelic-dependencies.sh'
-    workingDir rootProject
-    commandLine  cmdLine
+  environment "JAVAAGENTVERSION", javaAgentVersion
+  def rootProject = projectDir.path
+  def cmdLine = rootProject+'/newrelic-dependencies.sh'
+  workingDir rootProject
+  commandLine  cmdLine
 
 }
 
 task buildIfNeeded {
-   dependsOn checkForDependencies
-   dependsOn jar
-   tasks.findByName('jar').mustRunAfter 'checkForDependencies'
+  dependsOn checkForDependencies
+  dependsOn jar
+  tasks.findByName('jar').mustRunAfter 'checkForDependencies'
 }
 
 task createModule {
   dependsOn checkForDependencies
   description = 'Generate project files for a new instrumentation module'
-  group = 'New Relic'
+  group = 'New Relic Labs'
   doLast {
 
     def rootProject = projectDir.path
@@ -109,7 +109,7 @@ task createModule {
     mkdir projectTest
 
     ProjectTemplate.fromRoot(projectPath) {
-       'build.gradle' '''
+      'build.gradle' '''
         // Build.gradle generated for instrumentation module PROJECT_NAME
 
         apply plugin: 'java'
@@ -119,7 +119,7 @@ task createModule {
            // Example:
            // implementation 'javax.servlet:servlet-api:2.5'
 
-           // New Relic Java Agent dependencies
+           // New Relic Labs Java Agent dependencies
            implementation 'com.newrelic.agent.java:newrelic-agent:JAVA_AGENT_VERSION'
            implementation 'com.newrelic.agent.java:newrelic-api:JAVA_AGENT_VERSION'
            implementation fileTree(include: ['*.jar'], dir: '../libs')
@@ -142,14 +142,14 @@ task createModule {
           // passes 'javax.servlet:servlet-api:[2.2,2.5]'
           // exclude 'javax.servlet:servlet-api:2.4.public_draft'
         }'''.replace('PROJECT_GROUP', projectGroup)
-            .replace('PROJECT_NAME', projectName)
-            .replace('PROJECT_PATH', projectPath.path)
-            .replace('JAVA_AGENT_VERSION', project.ext.javaAgentVersion)
-     }
+              .replace('PROJECT_NAME', projectName)
+              .replace('PROJECT_PATH', projectPath.path)
+              .replace('JAVA_AGENT_VERSION', project.ext.javaAgentVersion)
+    }
 
-     File settings = new File('settings.gradle')
-     settings.append("include '$projectName'\n")
-     println "Created module in $projectPath.path."
+    File settings = new File('settings.gradle')
+    settings.append("include '$projectName'\n")
+    println "Created module in $projectPath.path."
   }
 }
 
@@ -175,7 +175,7 @@ subprojects {
 
   task install(dependsOn: buildIfNeeded, type: Copy) {
     description = 'Copies compiled jar to the NEW_RELIC_EXTENSIONS_DIR.'
-    group  = 'New Relic'
+    group  = 'New Relic Labs'
 
     def extDir = System.getenv("NEW_RELIC_EXTENSIONS_DIR") ?: " "
 
@@ -189,16 +189,16 @@ subprojects {
 
   install.doFirst  {
     def extDir = System.getenv("NEW_RELIC_EXTENSIONS_DIR")
-     if (extDir == null) {
-         throw new Exception("Must set NEW_RELIC_EXTENSIONS_DIR.")
-     }
+    if (extDir == null) {
+      throw new Exception("Must set NEW_RELIC_EXTENSIONS_DIR.")
+    }
 
-     if (extDir.startsWith("~" + File.separator)) {
-         extDir = System.getProperty("user.home") + extDir.substring(1);
-     }
+    if (extDir.startsWith("~" + File.separator)) {
+      extDir = System.getProperty("user.home") + extDir.substring(1);
+    }
 
-     if (!file(extDir).directory) {
-         throw new Exception(extDir + "NEW_RELIC_EXTENSIONS_DIR, set as '" + extDir + "'is not a valid directory.")
-     }
+    if (!file(extDir).directory) {
+      throw new Exception(extDir + "NEW_RELIC_EXTENSIONS_DIR, set as '" + extDir + "'is not a valid directory.")
+    }
   }
 }
